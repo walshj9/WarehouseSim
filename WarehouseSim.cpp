@@ -22,12 +22,12 @@ typedef struct Stow_bag {
 	vector<string> packages;
 };
 
-string genTBAnum();
+string genPKGnum();
 string genBagCode();
 Stow_bag genNewBag();
 Stow_bag closeBagAndReplace(Stow_bag old_bag);
 void ListStructVector(vector<Stow_bag> vec);
-vector<string> GenLocation(int clusters);
+void GenLocation(int clusters);
 
 unsigned seed = system_clock::now().time_since_epoch().count();
 minstd_rand0 generator(seed);
@@ -72,7 +72,7 @@ int main()
     return 0;
 }
 
-string genTBAnum() {
+string genPKGnum() {
 	vector<int> vec;
 	time_t now;
 	time(&now);
@@ -86,7 +86,7 @@ string genTBAnum() {
 	for (int j : vec) {//combines random nums into one string
 		out << j;
 	}
-	return "TBA" + out.str();
+	return "PKG" + out.str();
 }
 
 string genBagCode() {
@@ -140,10 +140,10 @@ void ListStructVector(vector<Stow_bag> vec) {
 	}
 }
 
-vector<string> GenLocation(int clusters) {//Fix array out-of-bounds read errors
+void GenLocation(int clusters) {//Fix array out-of-bounds read errors
 	int cluster_no, roll;
 	string output;
-	string alphabet[26] = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
+	string alphabet[] = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
 		"L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
 
 	
@@ -154,17 +154,22 @@ vector<string> GenLocation(int clusters) {//Fix array out-of-bounds read errors
 	}
 	else if (clusters > 26) {
 		roll = 1 + (clusters / 26);
-		for (int j = 1; j <= clusters; j++) {
-			output = to_string(roll) + alphabet[(j % 26)-1];//out of bounds read error
-			cluslets.push_back(output);
+		if (clusters % 26 > 0) {
+			for (int j = 1; j <= clusters; j++) {
+				if (j % 26 == 0){
+					output = to_string(roll) + alphabet[0];
+				}
+				else {
+					output = to_string(roll) + alphabet[(j % 26) - 1];//out of bounds read error
+					cluslets.push_back(output);
+				}
+			}
 		}
-		//for (auto it = cluslets[26]; it < cluslets.size(); ++it) { //Operator mismatches at it < cluslets.size(); ++it operators
-
-		//}
+		else {
+			output = to_string(roll) + alphabet[0];
+		}
 	}
 	else {
-		exit(3);
+		exit(-1);
 	}
-	
-	return cluslets;
 }
