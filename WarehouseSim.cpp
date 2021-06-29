@@ -27,7 +27,8 @@ string genBagCode();
 Stow_bag genNewBag();
 Stow_bag closeBagAndReplace(Stow_bag old_bag);
 void ListStructVector(vector<Stow_bag> vec);
-void GenLocation(int clusters);
+void GenClusters(vector<string> vec, int clusters);
+void GenShelfLocs();
 
 unsigned seed = system_clock::now().time_since_epoch().count();
 minstd_rand0 generator(seed);
@@ -39,6 +40,7 @@ int main()
 	int bag_count, bags=0,clusts;
 	unsigned short int second = 1000;
 	vector<string> vec;
+	vector<string> cluslets;
 	
 	
 	
@@ -63,7 +65,7 @@ int main()
 	cout << "No. of clusters: ";
 	cin >> clusts;
 
-	GenLocation(clusts);
+	GenClusters(cluslets, clusts);
 
 	for (auto it : cluslets) {
 		cout << it << endl;
@@ -140,7 +142,7 @@ void ListStructVector(vector<Stow_bag> vec) {
 	}
 }
 
-void GenLocation(int clusters) {//Fix array out-of-bounds read errors
+void GenClusters(vector<string> vec, int clusters) {
 	int cluster_no, roll;
 	string output;
 	string alphabet[] = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
@@ -149,7 +151,7 @@ void GenLocation(int clusters) {//Fix array out-of-bounds read errors
 	
 	if (clusters <= 26) {
 		for (int i = 1; i <= clusters; i++) {
-			cluslets.push_back(alphabet[i - 1]);
+			vec.push_back(alphabet[i - 1]);
 		}
 	}
 	else if (clusters > 26) {
@@ -158,10 +160,11 @@ void GenLocation(int clusters) {//Fix array out-of-bounds read errors
 			for (int j = 1; j <= clusters; j++) {
 				if (j % 26 == 0){
 					output = to_string(roll) + alphabet[0];
+					vec.push_back(output);
 				}
 				else {
-					output = to_string(roll) + alphabet[(j % 26) - 1];//out of bounds read error
-					cluslets.push_back(output);
+					output = to_string(roll) + alphabet[(j % 26) - 1];
+					vec.push_back(output);
 				}
 			}
 		}
@@ -172,4 +175,16 @@ void GenLocation(int clusters) {//Fix array out-of-bounds read errors
 	else {
 		exit(-1);
 	}
+}
+
+void GenShelfLocs() {
+	//get length and height of aisle shleves
+	//Name height numerically, langth alphabetically
+	string alphabet[] = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
+		"L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+	int length, height;
+	cout << "Aisle height: ";
+	cin >> height;
+	cout << "\nAisle length: ";
+	cin >> length;
 }
